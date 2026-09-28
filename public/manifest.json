@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "OGame Command Center",
+  "short_name": "OGCC",
+  "version": "0.1.0",
+  "description": "Couche moderne pour OGame : interface, tableau de bord de l'empire et analyses. Aucune automatisation du gameplay.",
+  "minimum_chrome_version": "120",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "OGame Command Center",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.ogame.gameforge.com/game/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

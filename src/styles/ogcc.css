@@ -1,0 +1,192 @@
+/*
+ * OGCC design system — single stylesheet for every OGCC surface
+ * (in-page UI inside a Shadow DOM, and extension pages such as the popup).
+ *
+ * Sizes are in px, not rem: inside OGame, rem would depend on the game's own root
+ * font-size. See docs/design-system.md for the rationale behind each token.
+ */
+@import 'tailwindcss';
+
+@theme {
+  /* Reset Tailwind's default palette: only OGCC tokens are allowed. */
+  --color-*: initial;
+
+  /* Space backgrounds */
+  --color-space-950: #04060c;
+  --color-space-900: #070b16;
+
+  /* Surfaces (dark blue-grey, from deepest to most raised) */
+  --color-surface-900: #0c1322;
+  --color-surface-800: #111a2d;
+  --color-surface-700: #17223a;
+  --color-surface-600: #1f2d4a;
+
+  /* Lines */
+  --color-line: rgb(122 162 226 / 0.14);
+  --color-line-strong: rgb(122 162 226 / 0.28);
+
+  /* Text */
+  --color-fg: #e6edf7;
+  --color-fg-muted: #a3b3cb;
+  --color-fg-subtle: #7b8da8;
+
+  /* Semantic accents */
+  --color-tech: #3fd0e6; /* technological information */
+  --color-tech-soft: rgb(63 208 230 / 0.14);
+  --color-action: #5b9bff; /* interactive elements */
+  --color-action-hover: #7cb0ff;
+  --color-action-soft: rgb(91 155 255 / 0.16);
+  --color-positive: #3ecf8e;
+  --color-warning: #f5a524;
+  --color-danger: #f0525f;
+  --color-special: #9d80ff; /* rare, special functions only */
+
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+
+  /* Resources (reserved for Phase 1) */
+  --color-metal: #b7c2d4;
+  --color-crystal: #7fc8ff;
+  --color-deuterium: #52e0c4;
+  --color-energy: #f4d35e;
+  --color-darkmatter: #b69cff;
+
+  /* Spacing scale in px (p-2 = 8px) */
+  --spacing: 4px;
+
+  /* Typography */
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Mono', ui-monospace, Consolas, monospace;
+
+  --text-*: initial;
+  --text-2xs: 11px;
+  --text-2xs--line-height: 14px;
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 13px;
+  --text-sm--line-height: 18px;
+  --text-base: 14px;
+  --text-base--line-height: 20px;
+  --text-lg: 16px;
+  --text-lg--line-height: 22px;
+  --text-xl: 19px;
+  --text-xl--line-height: 26px;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 30px;
+
+  /* Radii: moderate, military/tech feel */
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  --shadow-*: initial;
+  --shadow-panel: 0 12px 32px -12px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(122 162 226 / 0.06);
+  --shadow-glow: 0 0 0 1px rgb(63 208 230 / 0.35), 0 0 16px -4px rgb(63 208 230 / 0.45);
+
+  --ease-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --animate-panel-in: ogcc-panel-in 160ms var(--ease-snappy);
+  --animate-pulse-dot: ogcc-pulse-dot 2.4s ease-in-out infinite;
+
+  @keyframes ogcc-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.99);
+    }
+  }
+  @keyframes ogcc-pulse-dot {
+    50% {
+      opacity: 0.45;
+    }
+  }
+}
+
+@layer base {
+  /* In the Shadow DOM the host carries an inline `all: initial` (to block inherited page
+     styles), which beats :host rules — so base typography also lives on the app container. */
+  :host,
+  html,
+  [data-ogcc-app] {
+    color-scheme: dark;
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    color: var(--color-fg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background: var(--color-space-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-tech);
+    outline-offset: 2px;
+  }
+
+  /* Animations off: either the user setting or the OS preference. */
+  [data-ogcc-animations='off'] *,
+  [data-ogcc-animations='off'] *::before,
+  [data-ogcc-animations='off'] *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ---- Typographic hierarchy ---- */
+
+@utility ogcc-title-planet {
+  font-size: var(--text-xl);
+  line-height: var(--text-xl--line-height);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@utility ogcc-section-title {
+  font-size: var(--text-2xs);
+  line-height: var(--text-2xs--line-height);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+}
+
+@utility ogcc-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+@utility ogcc-label {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--color-fg-muted);
+}
+
+@utility ogcc-meta {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  color: var(--color-fg-subtle);
+}
+
+/* ---- Surfaces ---- */
+
+@utility ogcc-surface {
+  background: linear-gradient(180deg, rgb(23 34 58 / 0.92), rgb(12 19 34 / 0.94));
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(8px) saturate(120%);
+}
